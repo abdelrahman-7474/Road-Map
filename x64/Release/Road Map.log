@@ -1,0 +1,11 @@
+﻿  CountryGraph.cpp
+  Main.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road Map\CountryGraph.cpp(127): warning C4715: 'CountryGraph::Write_Cities_InFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road Map\CountryGraph.cpp(145): warning C4715: 'CountryGraph::Write_Edges_InFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road Map\CountryGraph.cpp(163): warning C4715: 'CountryGraph::Read_Cities_FromFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road Map\CountryGraph.cpp(191): warning C4715: 'CountryGraph::Read_Edges_FromFiles': not all control paths return a value
+  All 564 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Road Map.vcxproj -> C:\Users\ABDELRAHMAN\source\repos\Road Map\x64\Release\Road Map.exe
