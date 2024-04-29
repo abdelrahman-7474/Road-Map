@@ -6,6 +6,7 @@
 *.lo
 *.o
 *.obj
+.vs/Road Map/v17/Browse.VC.opendb
 
 # Precompiled Headers
 *.gch
