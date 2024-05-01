@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c4ef7332-96c6-4189-a442-2b8000df9b2b}</ProjectGuid>
+    <ProjectGuid>{31f7d6ce-80a2-4a1e-bcbb-abf9c2094270}</ProjectGuid>
     <RootNamespace>RoadMap</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

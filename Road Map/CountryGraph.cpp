@@ -8,21 +8,23 @@ using namespace std;
 void CountryGraph::AddCity(string newcity) {
 
     cities[newcity];//o(1)
+
 }
 
 void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
     if (!FindEdge(city_1, city_2))
     {
-
+        //cairo alex 10
         edge newedge1;
-        newedge1.destination_city = city_1;
-        newedge1.cost = cost;
+        newedge1.destination_city = city_1;//cairo
+        newedge1.cost = cost;//10
         cities[city_2].push_back(newedge1);//o(1)
-
+        //alex.list(cairo,10)
         edge newedge2;
-        newedge2.destination_city = city_2;
-        newedge2.cost = cost;
+        newedge2.destination_city = city_2;//alex
+        newedge2.cost = cost;//10
         cities[city_1].push_back(newedge2);//o(1)
+        //cairo.list(alex,10)
     }
 
 }
@@ -30,6 +32,7 @@ void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
 bool CountryGraph::FindCity(string city)
 {
     return cities.find(city) != cities.end();//o(1) 
+
 }
 
 bool CountryGraph::FindEdge(string city_1, string city_2)
@@ -59,6 +62,7 @@ void CountryGraph::DeleteCity(string deletedcity)
 
 void CountryGraph::DeleteEdge(string city_1, string city_2) //O(E)
 {
+
     if (FindCity(city_1) and FindCity(city_2))
     {
         cities[city_1].erase(std::remove_if(cities[city_1].begin(), cities[city_1].end(), [city_2](const edge& e) {
@@ -139,6 +143,7 @@ int CountryGraph::Write_Edges_InFiles()
         for (auto& edge : city.second)
         {
             outfile << city.first << "," << edge.destination_city << "," << edge.cost << endl;
+
         }
     outfile.close();
     cout << " Edges saved to file: " << filename << endl;
@@ -166,7 +171,7 @@ int CountryGraph::Read_Edges_FromFiles()
 {
     string filename = "edges.txt";
 
-    
+
     ifstream infile(filename);
     if (!infile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -182,7 +187,7 @@ int CountryGraph::Read_Edges_FromFiles()
             data_tokens.push_back(token);
         }
 
-        if (data_tokens.size() >= 3)
+        if (data_tokens.size() == 3)
         {
             AddEdge(data_tokens[0], data_tokens[1], stoi(data_tokens[2]));
         }

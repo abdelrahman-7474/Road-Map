@@ -3,8 +3,8 @@
 using namespace std;
 void MainMenu()
 {
-	cout << "\t\t\t--------------------- Main Menu ------------------- :"<<endl;
-	cout << "Enter 1 to Add new city"<<endl;
+	cout << "\t\t\t--------------------- Main Menu ------------------- :" << endl;
+	cout << "Enter 1 to Add new city" << endl;
 	cout << "Enter 2 to Add new Edge" << endl;
 	cout << "Enter 3 to Find City" << endl;
 	cout << "Enter 4 to Find Edge " << endl;
@@ -14,7 +14,7 @@ void MainMenu()
 	cout << "Enter 8 to Display all Graph " << endl;
 	cout << "Enter 0 to End program " << endl;
 }
-void operation_switch(int operation_number, CountryGraph &Country)
+void operation_switch(int operation_number, CountryGraph& Country)
 {
 	switch (operation_number)
 	{
@@ -24,7 +24,7 @@ void operation_switch(int operation_number, CountryGraph &Country)
 		cout << "Enter added city name :";
 		cin >> city;
 		Country.AddCity(city);
-		cout<<"City " << city << " Added successfully"<<endl;
+		cout << "City " << city << " Added successfully" << endl;
 		break;
 	}
 	case 2:
@@ -39,10 +39,10 @@ void operation_switch(int operation_number, CountryGraph &Country)
 		cout << "Enter cost of the road :";
 		cin >> cost;
 		Country.AddEdge(city_1, city_2, cost);
-		cout << "Edge between City " << city_1 << "and City "<<city_2<<" with cost "<<cost << " Added successfully"<<endl;
+		cout << "Edge between City " << city_1 << "and City " << city_2 << " with cost " << cost << " Added successfully" << endl;
 		break;
 	}
-	case 3 :
+	case 3:
 	{
 		string city;
 		cout << "Enter city name to search :";
@@ -62,7 +62,7 @@ void operation_switch(int operation_number, CountryGraph &Country)
 				Country.AddCity(city);
 			}
 		}
-		
+
 	}
 	case 4:
 	{
@@ -77,13 +77,13 @@ void operation_switch(int operation_number, CountryGraph &Country)
 		cin >> cost;
 		if (Country.FindEdge(city_1, city_2))
 		{
-			cout << "Edge between City" << city_1 << "and City " << city_2 << " Founded successfully"<<endl;
+			cout << "Edge between City" << city_1 << "and City " << city_2 << " Founded successfully" << endl;
 		}
 		else
 		{
 			int choosenumber;
 			cout << "Edge not Founded" << endl;
-			cout << "Enter 1 to add Edge between city "<<city_1<<"and city 2"<<city_2 <<" to Graph and any other number to back to Main menu : ";
+			cout << "Enter 1 to add Edge between city " << city_1 << "and city 2" << city_2 << " to Graph and any other number to back to Main menu : ";
 			cin >> choosenumber;
 			if (choosenumber == 1)
 			{
@@ -108,7 +108,7 @@ void operation_switch(int operation_number, CountryGraph &Country)
 		}
 		break;
 	}
-	case 6 :
+	case 6:
 	{
 		string city_1;
 		string city_2;
@@ -119,9 +119,9 @@ void operation_switch(int operation_number, CountryGraph &Country)
 		cin >> city_2;
 		cout << "Enter cost of deleted edge :";
 		cin >> cost;
-		if (Country.FindEdge(city_1,city_2))
+		if (Country.FindEdge(city_1, city_2))
 		{
-			Country.DeleteEdge(city_1,city_2);
+			Country.DeleteEdge(city_1, city_2);
 			cout << "Edge between City " << city_1 << "and City " << city_2 << " with cost " << cost << " deleted successfully" << endl;
 		}
 		else
@@ -138,24 +138,24 @@ void operation_switch(int operation_number, CountryGraph &Country)
 	}
 	case 8:
 	{
-		cout << "Display Graph :"<<endl;
+		cout << "Display Graph :" << endl;
 		Country.DisplayGraph();
 		cout << "All Graph Displayed ";
 		break;
 	}
-	default :
+	default:
 	{
 		cout << "invalid operation number";
 		break;
 	}
 	}
 }
-void ReadFormFiles(CountryGraph &Country)
+void ReadFormFiles(CountryGraph& Country)
 {
 	Country.Read_Cities_FromFiles();
 	Country.Read_Edges_FromFiles();
 }
-void WriteInFiles(CountryGraph &Country)
+void WriteInFiles(CountryGraph& Country)
 {
 	Country.Write_Cities_InFiles();
 	Country.Write_Edges_InFiles();
