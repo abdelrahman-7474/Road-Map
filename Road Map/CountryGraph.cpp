@@ -3,6 +3,9 @@
 #include <sstream>
 #include <fstream>
 #include<vector>
+#include<unordered_map>
+#include<unordered_set>
+#include<queue>
 using namespace std;
 
 void CountryGraph::AddCity(string newcity) {
@@ -193,4 +196,33 @@ int CountryGraph::Read_Edges_FromFiles()
         }
     }
     infile.close();
+}
+
+void CountryGraph::BFS(string start)
+{
+    unordered_set<string> visited;
+    queue<string>temp;
+
+    visited.insert(start);
+    temp.push(start);
+    int levelnum = 0;
+
+    while (!temp.empty())
+    {
+        string current = temp.front();
+        temp.pop();
+
+        for (const auto& nextEdge : cities.at(current))
+        {
+            string next = nextEdge.destination_city;
+            if (temp.empty())
+                levelnum++;
+            if (visited.count(next) == 0)
+            {
+                visited.insert(next);
+                temp.push(next);
+                cout << next << " ";
+            }
+        }
+    }
 }

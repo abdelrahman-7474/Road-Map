@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\ds\\Road-Map\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|D:\\ds\\Road-Map\\Road Map\\CountryGraph.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|solutionrelative:Road Map\\CountryGraph.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|D:\\ds\\Road-Map\\Road Map\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|solutionrelative:Road Map\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|D:\\ds\\Road-Map\\Road Map\\CountryGraph.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{31F7D6CE-80A2-4A1E-BCBB-ABF9C2094270}|Road Map\\Road Map.vcxproj|solutionrelative:Road Map\\CountryGraph.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Main.cpp",
+              "DocumentMoniker": "D:\\ds\\Road-Map\\Road Map\\Main.cpp",
+              "RelativeDocumentMoniker": "Road Map\\Main.cpp",
+              "ToolTip": "D:\\ds\\Road-Map\\Road Map\\Main.cpp",
+              "RelativeToolTip": "Road Map\\Main.cpp",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAKEAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-01T18:06:21.458Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CountryGraph.cpp",
+              "DocumentMoniker": "D:\\ds\\Road-Map\\Road Map\\CountryGraph.cpp",
+              "RelativeDocumentMoniker": "Road Map\\CountryGraph.cpp",
+              "ToolTip": "D:\\ds\\Road-Map\\Road Map\\CountryGraph.cpp",
+              "RelativeToolTip": "Road Map\\CountryGraph.cpp",
+              "ViewState": "AQIAAMgAAAAAAAAAAAAAANsAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-01T18:02:24.168Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CountryGraph.h",
+              "DocumentMoniker": "D:\\ds\\Road-Map\\Road Map\\CountryGraph.h",
+              "RelativeDocumentMoniker": "Road Map\\CountryGraph.h",
+              "ToolTip": "D:\\ds\\Road-Map\\Road Map\\CountryGraph.h",
+              "RelativeToolTip": "Road Map\\CountryGraph.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-01T18:02:16.242Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
