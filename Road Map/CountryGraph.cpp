@@ -6,6 +6,7 @@
 #include<unordered_map>
 #include<unordered_set>
 #include<queue>
+#include<stack>
 using namespace std;
 
 void CountryGraph::AddCity(string newcity) {
@@ -224,5 +225,28 @@ void CountryGraph::BFS(string start)
                 cout << next << " ";
             }
         }
+    }
+}
+
+void CountryGraph::DFS(string start_city) {
+    unordered_map<string, bool> visited;
+    stack<string> vertex_stack;
+    vertex_stack.push(start_city);
+    while (!vertex_stack.empty()) {
+        string current_city = vertex_stack.top();
+        vertex_stack.pop();
+
+        // Process the current city 
+        cout << "city: " << current_city << " ";
+        visited[current_city] = true;
+        // Explore unvisited neighbors
+        for (auto& edge : cities[current_city]) {
+            string neighbor_city = edge.destination_city;
+            if (!visited[neighbor_city]) {
+                //  visited[neighbor_city] = true;
+                vertex_stack.push(neighbor_city);
+            }
+        }
+
     }
 }

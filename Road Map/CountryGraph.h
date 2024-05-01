@@ -25,5 +25,6 @@ public:
 	int Write_Edges_InFiles();
 	int Read_Cities_FromFiles();
 	int Read_Edges_FromFiles();
+	void DFS(string start_city);
 	void BFS(string start);
 };

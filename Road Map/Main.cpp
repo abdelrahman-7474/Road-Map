@@ -12,6 +12,7 @@ void MainMenu()
 	cout << "Enter 6 to Delete Edge " << endl;
 	cout << "Enter 7 to Delete all Graph " << endl;
 	cout << "Enter 8 to Display all Graph " << endl;
+	cout << "Enter 9 to Display DFS" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
 void operation_switch(int operation_number, CountryGraph& Country)
@@ -141,6 +142,15 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Display Graph :" << endl;
 		Country.DisplayGraph();
 		cout << "All Graph Displayed ";
+		break;
+	}
+	case 9: {
+		string start_city;
+		cout << "enter start_city " << endl;
+		cin >> start_city;
+		cout << "Display DFS : " << endl;
+		Country.DFS(start_city);
+		cout << "DFS is display" << endl;
 		break;
 	}
 	default:
