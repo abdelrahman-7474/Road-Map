@@ -250,3 +250,47 @@ void CountryGraph::DFS(string start_city) {
 
     }
 }
+
+pair<CountryGraph, int> CountryGraph::prims() {
+    // pq sort edges acendingly 
+    priority_queue <pair<int, pair<string, string>>, vector<pair<int, pair<string, string>>>, greater<pair<int, pair<string, string>>>> pq;
+    CountryGraph msp;
+    unordered_map<string, bool> vis;
+    int total_cost = 0;
+
+    // start with all cities unvisited
+    for (auto& city : cities)
+        vis[city.first] = false;
+
+    // visit the first city and push the edges 
+    string start = cities.begin()->first;
+    vis[start] = true;
+    for (auto& edge : cities[start]) {
+        if (!vis[edge.destination_city])
+            pq.push({ edge.cost, {start, edge.destination_city} });
+    }
+
+    while (!pq.empty()) {
+
+        int cost = pq.top().first;
+        string parent = pq.top().second.first;
+        string destination = pq.top().second.second;
+        pq.pop();
+
+        // continue if destination was visited 
+
+        if (!vis[destination]) {
+            // add the cost and visit the city
+            total_cost += cost;
+            vis[destination] = true;
+            msp.AddEdge(parent, destination, cost);
+
+            // push all the edges 
+            for (auto& edge : cities[destination]) {
+                if (!vis[edge.destination_city])
+                    pq.push({ edge.cost, {destination, edge.destination_city} });
+            }
+        }
+    }
+    return { msp, total_cost };
+}

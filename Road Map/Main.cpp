@@ -13,6 +13,7 @@ void MainMenu()
 	cout << "Enter 7 to Delete all Graph " << endl;
 	cout << "Enter 8 to Display all Graph " << endl;
 	cout << "Enter 9 to Display DFS" << endl;
+	cout << "Enter 10 to Display msp" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
 void operation_switch(int operation_number, CountryGraph& Country)
@@ -151,6 +152,15 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Display DFS : " << endl;
 		Country.DFS(start_city);
 		cout << "DFS is display" << endl;
+		break;
+	}
+	case 10:
+	{
+		pair<CountryGraph, int> msp = Country.prims();
+		cout << "Display msp :" << endl;
+		msp.first.DisplayGraph();
+		cout << "total cost: " << msp.second << endl;
+		cout << "msp Displayed ";
 		break;
 	}
 	default:
