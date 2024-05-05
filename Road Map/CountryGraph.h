@@ -27,5 +27,5 @@ public:
 	int Read_Edges_FromFiles();
 	void DFS(string start_city);
 	void BFS(string start);
-	pair<CountryGraph, int> prims();
+	pair<CountryGraph, int> Prims();
 };

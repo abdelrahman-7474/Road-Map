@@ -16,6 +16,11 @@ void CountryGraph::AddCity(string newcity) {
 }
 
 void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
+    if (city_1 == city_2)
+    {
+        cout << "you canot add edge between same city" << endl;
+        return;
+    }
     if (!FindEdge(city_1, city_2))
     {
         //cairo alex 10
@@ -66,7 +71,7 @@ void CountryGraph::DeleteCity(string deletedcity)
 
 void CountryGraph::DeleteEdge(string city_1, string city_2) //O(E)
 {
-
+   
     if (FindCity(city_1) and FindCity(city_2))
     {
         cities[city_1].erase(std::remove_if(cities[city_1].begin(), cities[city_1].end(), [city_2](const edge& e) {
@@ -81,20 +86,16 @@ void CountryGraph::DeleteEdge(string city_1, string city_2) //O(E)
 
 void CountryGraph::Delete_AllGraph()
 {
-    for (auto& city : cities)
-    {
-        DeleteCity(city.first);
-    }
-
+    cities.clear();
 }
 
 void CountryGraph::DisplayGraph()
 {
     for (auto& city : cities)//o(n^2)
     {
-        cout << "(" << city.first << ")" << "------>";
+        cout << "(" << city.first << ")" ;
         for (auto& Edges : city.second)
-            cout << "(" << Edges.destination_city << "," << Edges.cost << ")" << "------>";
+            cout << "------>" << "(" << Edges.destination_city << "," << Edges.cost << ")";
         cout << endl;
     }
 }
@@ -251,7 +252,7 @@ void CountryGraph::DFS(string start_city) {
     }
 }
 
-pair<CountryGraph, int> CountryGraph::prims() {
+pair<CountryGraph, int> CountryGraph::Prims() {
     // pq sort edges acendingly 
     priority_queue <pair<int, pair<string, string>>, vector<pair<int, pair<string, string>>>, greater<pair<int, pair<string, string>>>> pq;
     CountryGraph msp;

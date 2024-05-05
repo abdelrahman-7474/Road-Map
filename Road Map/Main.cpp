@@ -13,7 +13,8 @@ void MainMenu()
 	cout << "Enter 7 to Delete all Graph " << endl;
 	cout << "Enter 8 to Display all Graph " << endl;
 	cout << "Enter 9 to Display DFS" << endl;
-	cout << "Enter 10 to Display msp" << endl;
+	cout << "Enter 10 to Display BFS" << endl;
+	cout << "Enter 11 to Display MSP" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
 void operation_switch(int operation_number, CountryGraph& Country)
@@ -41,7 +42,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Enter cost of the road :";
 		cin >> cost;
 		Country.AddEdge(city_1, city_2, cost);
-		cout << "Edge between City " << city_1 << "and City " << city_2 << " with cost " << cost << " Added successfully" << endl;
+		cout << "Edge between City " << city_1 << " and City " << city_2 << " with cost " << cost << " Added successfully" << endl;
 		break;
 	}
 	case 3:
@@ -145,18 +146,29 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "All Graph Displayed ";
 		break;
 	}
-	case 9: {
+	case 9:
+	{
 		string start_city;
-		cout << "enter start_city " << endl;
+		cout << "Enter start city " << endl;
 		cin >> start_city;
 		cout << "Display DFS : " << endl;
 		Country.DFS(start_city);
 		cout << "DFS is display" << endl;
 		break;
 	}
-	case 10:
+	case 10: 
 	{
-		pair<CountryGraph, int> msp = Country.prims();
+		string start_city;
+		cout << "Enter start city " << endl;
+		cin >> start_city;
+		cout << "Display BFS : " << endl;
+		Country.BFS(start_city);
+		cout << "BFS is display" << endl;
+		break;
+	}
+	case 11:
+	{
+		pair<CountryGraph, int> msp = Country.Prims();
 		cout << "Display msp :" << endl;
 		msp.first.DisplayGraph();
 		cout << "total cost: " << msp.second << endl;
