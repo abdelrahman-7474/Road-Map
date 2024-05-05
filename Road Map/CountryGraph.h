@@ -28,4 +28,5 @@ public:
 	void DFS(string start_city);
 	void BFS(string start);
 	pair<CountryGraph, int> Prims();
+	void dijkstra_algorithm(string start_city);
 };

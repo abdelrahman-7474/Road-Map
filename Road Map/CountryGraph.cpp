@@ -8,7 +8,7 @@
 #include<queue>
 #include<stack>
 using namespace std;
-
+const float INF = INFINITY;
 void CountryGraph::AddCity(string newcity) {
 
     cities[newcity];//o(1)
@@ -294,4 +294,45 @@ pair<CountryGraph, int> CountryGraph::Prims() {
         }
     }
     return { msp, total_cost };
+}
+void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
+{
+    unordered_map<string, int> costs; //for sorting each city with it’s updated distance
+    unordered_map<string, bool> visited; // for marking the cities the dijkstra’s_algorithm already visit 
+    unordered_map<string, string> previous_node;
+    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> next_node; // the priority_queue using for sort the nodes using thier costs , we need the next node that one with min distance 
+
+
+    for (auto node : cities) {
+        //set all the distances with infinity value for using it in comparing
+        costs[node.first] = INF;
+        visited[node.first] = 0;
+    }
+
+    costs[source] = 0;
+    next_node.push({ costs[source], source });
+
+    while (!next_node.empty()) {
+        auto current_city = next_node.top();
+        string current = current_city.second;
+        next_node.pop(); //remove this city cause it already selected (visited)
+        if (!visited[current]) //second---> string in the priority_queue
+        {
+            visited[current] = 1;
+            for (auto neighbours : cities[current]) {
+                if (costs[current] + neighbours.cost < costs[neighbours.destination_city] && !visited[neighbours.destination_city]) {
+
+                    costs[neighbours.destination_city] = costs[current] + neighbours.cost;
+                    previous_node[neighbours.destination_city] = current;
+                    next_node.push({ costs[neighbours.destination_city] ,neighbours.destination_city });
+
+                }
+            }
+        }
+    }
+
+    cout << "Shortest distances from " << source << ":\n";
+    for (auto distance : costs) {
+        cout << distance.first << " : " << distance.second << " from " << previous_node[distance.first] << endl;
+    }
 }

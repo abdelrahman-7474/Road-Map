@@ -15,6 +15,7 @@ void MainMenu()
 	cout << "Enter 9 to Display DFS" << endl;
 	cout << "Enter 10 to Display BFS" << endl;
 	cout << "Enter 11 to Display MSP" << endl;
+	cout << "Enter 12 to Display Dijkstra algorithm" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
 void operation_switch(int operation_number, CountryGraph& Country)
@@ -174,6 +175,15 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "total cost: " << msp.second << endl;
 		cout << "msp Displayed ";
 		break;
+	}
+	case 12:
+	{
+		
+		cout << "Enter the start city"<<endl;
+		string first_city;
+		cin >> first_city;
+		Country.dijkstra_algorithm(first_city);
+		cout << "Dijkstra’s algorithm displayed successfully" << endl;
 	}
 	default:
 	{
