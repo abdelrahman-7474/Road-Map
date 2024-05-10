@@ -16,6 +16,8 @@ void MainMenu()
 	cout << "Enter 10 to Display BFS" << endl;
 	cout << "Enter 11 to Display MSP" << endl;
 	cout << "Enter 12 to Display Dijkstra algorithm" << endl;
+	cout << "Enter 13 to Undo" << endl;
+	cout << "Enter 14 to Redo" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
 void operation_switch(int operation_number, CountryGraph& Country)
@@ -169,9 +171,9 @@ void operation_switch(int operation_number, CountryGraph& Country)
 	}
 	case 11:
 	{
-		pair<CountryGraph, int> msp = Country.Prims();
+		
 		cout << "Display msp :" << endl;
-		msp.first.DisplayGraph();
+		pair<CountryGraph, int> msp = Country.Prims();
 		cout << "total cost: " << msp.second << endl;
 		cout << "msp Displayed ";
 		break;
@@ -184,6 +186,18 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cin >> first_city;
 		Country.dijkstra_algorithm(first_city);
 		cout << "Dijkstra’s algorithm displayed successfully" << endl;
+		break;
+	}
+	case 13:
+	{
+		Country.Undo();
+		break;
+	}
+	case 14:
+	{
+
+		Country.Redo();
+		break;
 	}
 	default:
 	{
@@ -207,7 +221,9 @@ int main()
 
 	cout << "\t\t\t--------------------- HI you are in ROAD MAP PROJECT -------------------" << endl;
 	CountryGraph Country;
+	Country.applychanges = false;
 	ReadFormFiles(Country);
+	Country.applychanges = true;
 	int operation_number;
 	while (true)
 	{

@@ -13,6 +13,10 @@ void CountryGraph::AddCity(string newcity) {
 
     cities[newcity];//o(1)
 
+    if (applychanges)
+       undoStack.push({0, make_pair(newcity, list<edge>()) });
+    
+
 }
 
 void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
@@ -34,6 +38,9 @@ void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
         newedge2.cost = cost;//10
         cities[city_1].push_back(newedge2);//o(1)
         //cairo.list(alex,10)
+
+        if (applychanges)
+            undoStack.push({ 1, make_pair(city_1, list<edge>{newedge2})});
     }
 
 }
@@ -57,8 +64,22 @@ bool CountryGraph::FindEdge(string city_1, string city_2)
 
 }
 
+edge CountryGraph::GetEdge(string city_1, string city_2)
+{
+    for (auto& edges : cities[city_1])
+    {
+        if (edges.destination_city == city_2)
+        {
+            return edges;
+        }
+    }
+}
+
 void CountryGraph::DeleteCity(string deletedcity)
 {
+    if (applychanges)
+        undoStack.push({ 2, make_pair(deletedcity, cities[deletedcity]) });
+
     cities.erase(deletedcity);
     for (auto& city : cities)//O(V*E)
     {
@@ -74,6 +95,9 @@ void CountryGraph::DeleteEdge(string city_1, string city_2) //O(E)
    
     if (FindCity(city_1) and FindCity(city_2))
     {
+        if (applychanges)
+            undoStack.push({ 3, make_pair(city_1, list<edge>{GetEdge(city_1, city_2)}) });
+
         cities[city_1].erase(std::remove_if(cities[city_1].begin(), cities[city_1].end(), [city_2](const edge& e) {
             return e.destination_city == city_2;
             }), cities[city_1].end());
@@ -81,6 +105,9 @@ void CountryGraph::DeleteEdge(string city_1, string city_2) //O(E)
         cities[city_2].erase(std::remove_if(cities[city_2].begin(), cities[city_2].end(), [city_1](const edge& e) {
             return e.destination_city == city_1;
             }), cities[city_2].end());
+
+
+
     }
 }
 
@@ -285,7 +312,7 @@ pair<CountryGraph, int> CountryGraph::Prims() {
             total_cost += cost;
             vis[destination] = true;
             msp.AddEdge(parent, destination, cost);
-
+            cout << parent << " -> " << destination << " " << cost << endl;
             // push all the edges 
             for (auto& edge : cities[destination]) {
                 if (!vis[edge.destination_city])
@@ -335,4 +362,78 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
     for (auto distance : costs) {
         cout << distance.first << " : " << distance.second << " from " << previous_node[distance.first] << endl;
     }
+}
+
+void CountryGraph::ReaddCity(pair<string, list<edge>>& city) {
+    cities[city.first];
+    for (auto& e : city.second) {
+        AddEdge(city.first, e.destination_city, e.cost);
+    }
+}
+
+void CountryGraph::Undo() {
+    if (!undoStack.empty()) {
+        redoStack.push(undoStack.top());
+        ApplyUChanges(undoStack.top());
+        undoStack.pop();
+    }
+    else {
+        cout << "Nothing to undo." << endl;
+    }
+}
+
+// Method to redo the last undone operation
+void CountryGraph::Redo() {
+    if (!redoStack.empty()) {
+        undoStack.push(redoStack.top());
+        ApplyRChanges(redoStack.top());
+        redoStack.pop();
+    }
+    else {
+        cout << "Nothing to redo." << endl;
+    }
+}
+
+void CountryGraph::ApplyUChanges(pair<int, pair<string, list<edge>>>& change) {
+    applychanges = false;
+    switch (change.first) {
+    case 0: //delete city
+        DeleteCity(change.second.first);
+        break;
+
+    case 1: //delete edge
+        DeleteEdge(change.second.first, change.second.second.front().destination_city);
+        break;
+
+    case 2: // add city
+        ReaddCity(change.second);
+        break;
+
+    case 3: // add edge
+        AddEdge(change.second.first, change.second.second.front().destination_city, change.second.second.front().cost);
+        break;
+    }
+    applychanges = true;
+}
+
+void CountryGraph::ApplyRChanges(pair<int, pair<string, list<edge>>>& change) {
+    applychanges = false;
+    switch (change.first) {
+    case 0: //add city
+        AddCity(change.second.first);
+        break;
+
+    case 1: //add edge
+        AddEdge(change.second.first, change.second.second.front().destination_city, change.second.second.front().cost);
+        break;
+
+    case 2: // delete city
+        DeleteCity(change.second.first);
+        break;
+
+    case 3: // delete edge
+        DeleteEdge(change.second.first, change.second.second.front().destination_city);
+        break;
+    }
+    applychanges = true;
 }
