@@ -1,0 +1,96 @@
+string CountryGraph::findParent(unordered_map<string, string>& parent, const string& city) {
+    if (parent[city] != city) {
+        parent[city] = findParent(parent, parent[city]);
+    }
+    return parent[city];
+}
+
+void CountryGraph::unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2) {
+    string parent1 = findParent(parent, city1);
+    string parent2 = findParent(parent, city2);
+
+    if (parent1 != parent2) {
+        if (rank[parent1] < rank[parent2]) {
+            parent[parent1] = parent2;
+        }
+        else if (rank[parent1] > rank[parent2]) {
+            parent[parent2] = parent1;
+        }
+        else {
+            parent[parent2] = parent1;
+            rank[parent1]++;
+        }
+    }
+}
+
+void CountryGraph::kruskalMST() {
+    // Define a structure to represent an edge
+    struct Edge {
+        string src;
+        string dest;
+        int cost;
+
+        Edge(const string& source, const string& destination, int cst) : src(source), dest(destination), cost(cst) {}
+    };
+
+    // Comparator function for sorting edges by cost
+    auto compareEdges = [](const Edge& e1, const Edge& e2) {
+        return e1.cost > e2.cost; // Note: Changed to '>' for minimum spanning tree
+    };
+
+    // Priority queue to store edges sorted by cost
+    priority_queue<Edge, vector<Edge>, decltype(compareEdges)> pq(compareEdges);
+
+    // Add all edges to the priority queue
+    for (const auto& city : cities) {
+        for (const auto& edge : city.second) {
+            pq.emplace(city.first, edge.destination_city, edge.cost);
+        }
+    }
+
+    // Set to store parent of each city
+    unordered_map<string, string> parent;
+
+    // Initialize rank for each city
+    unordered_map<string, int> rank;
+    for (const auto& city : cities) {
+        parent[city.first] = city.first; // Each city is its own parent initially
+        rank[city.first] = 0; // Initialize rank to 0
+    }
+
+    // Minimum spanning tree edges
+    set<pair<string, string>> mstEdges;
+
+    int minCost = 0; // Variable to store the total cost of the minimum spanning tree
+
+    // Iterate until all edges are processed or MST is formed
+    while (!pq.empty()) {
+        Edge currentEdge = pq.top();
+        pq.pop();
+
+        string parent1 = findParent(parent, currentEdge.src);
+        string parent2 = findParent(parent, currentEdge.dest);
+
+        // Check if adding this edge forms a cycle
+        if (parent1 != parent2) {
+            // Add edge to MST
+            mstEdges.emplace(min(currentEdge.src, currentEdge.dest), max(currentEdge.src, currentEdge.dest));
+
+            // Add cost to the minimum spanning tree
+            minCost += currentEdge.cost;
+
+            // Merge the sets of source and destination cities
+            unionCities(parent, rank, parent1, parent2);
+        }
+    }
+
+    // Print the minimum spanning tree
+    cout << "Minimum Spanning Tree (Kruskal's Algorithm):" << endl;
+    for (const auto& edge : mstEdges) {
+        cout << edge.first << " -> " << edge.second << endl;
+    }
+    // Print the minimum cost of the minimum spanning tree
+    cout << "Minimum Cost of the Minimum Spanning Tree: " << minCost << endl;
+}
+
+
