@@ -364,7 +364,7 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
     }
 }
 
-void CountryGraph::ReaddCity(pair<string, list<edge>>& city) {
+void CountryGraph::ReAddCity(pair<string, list<edge>>& city) {
     cities[city.first];
     for (auto& e : city.second) {
         AddEdge(city.first, e.destination_city, e.cost);
@@ -406,7 +406,7 @@ void CountryGraph::ApplyUChanges(pair<int, pair<string, list<edge>>>& change) {
         break;
 
     case 2: // add city
-        ReaddCity(change.second);
+        ReAddCity(change.second);
         break;
 
     case 3: // add edge

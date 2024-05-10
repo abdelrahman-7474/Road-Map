@@ -39,7 +39,7 @@ public:
     void Redo();
     void ApplyUChanges(pair<int, pair<string, list<edge>>>&);
 	void ApplyRChanges(pair<int, pair<string, list<edge>>>&);
-	void ReaddCity(pair<string, list<edge>>&);
+	void ReAddCity(pair<string, list<edge>>&);
 	edge GetEdge(string city_1, string city_2);
 	bool applychanges;
 };

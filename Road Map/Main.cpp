@@ -191,12 +191,14 @@ void operation_switch(int operation_number, CountryGraph& Country)
 	case 13:
 	{
 		Country.Undo();
+		cout << "operation done successfully";
 		break;
 	}
 	case 14:
 	{
 
 		Country.Redo();
+		cout << "operation done successfully";
 		break;
 	}
 	default:
