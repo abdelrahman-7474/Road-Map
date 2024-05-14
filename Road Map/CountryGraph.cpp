@@ -1,12 +1,5 @@
 #include "CountryGraph.h"
-#include<iostream>
-#include <sstream>
-#include <fstream>
-#include<vector>
-#include<unordered_map>
-#include<unordered_set>
-#include<queue>
-#include<stack>
+
 using namespace std;
 const float INF = INFINITY;
 void CountryGraph::AddCity(string newcity) {
@@ -145,9 +138,9 @@ void CountryGraph::DisplayEdges()
         }
 }
 
-int CountryGraph::Write_Cities_InFiles()
+int CountryGraph::Write_Cities_InFiles(string username)
 {
-    string filename = "cities.txt";
+    string filename =username+ "_city.txt";
     ofstream clearFile(filename);
     ofstream outfile(filename);
     if (!outfile.is_open()) {
@@ -162,9 +155,9 @@ int CountryGraph::Write_Cities_InFiles()
     cout << " City saved to file: " << filename << endl;
 }
 
-int CountryGraph::Write_Edges_InFiles()
+int CountryGraph::Write_Edges_InFiles(string username)
 {
-    string filename = "edges.txt";
+    string filename = username + "_edge.txt";
     ofstream clearFile(filename);
     ofstream outfile(filename);
     if (!outfile.is_open()) {
@@ -181,10 +174,9 @@ int CountryGraph::Write_Edges_InFiles()
     cout << " Edges saved to file: " << filename << endl;
 }
 
-int CountryGraph::Read_Cities_FromFiles()
+int CountryGraph::Read_Cities_FromFiles(string username)
 {
-    string filename = "cities.txt";
-    vector<string> cities;
+    string filename = username + "_city.txt";
     ifstream infile(filename);
     if (!infile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -199,10 +191,9 @@ int CountryGraph::Read_Cities_FromFiles()
     infile.close();
 }
 
-int CountryGraph::Read_Edges_FromFiles()
+int CountryGraph::Read_Edges_FromFiles(string username)
 {
-    string filename = "edges.txt";
-
+    string filename = username + "_edge.txt";
 
     ifstream infile(filename);
     if (!infile.is_open()) {
@@ -277,6 +268,14 @@ void CountryGraph::DFS(string start_city) {
         }
 
     }
+    if (visited.size() == cities.size())
+    {
+       connected=true;
+    }
+    else
+    {
+        connected = false;
+    }
 }
 
 pair<CountryGraph, int> CountryGraph::Prims() {
@@ -332,7 +331,7 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
 
     for (auto node : cities) {
         //set all the distances with infinity value for using it in comparing
-        costs[node.first] = INF;
+        costs[node.first] = numeric_limits<int>::max();
         visited[node.first] = 0;
     }
 
@@ -436,4 +435,187 @@ void CountryGraph::ApplyRChanges(pair<int, pair<string, list<edge>>>& change) {
         break;
     }
     applychanges = true;
+}
+////////////////////////////////////////////////
+
+unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
+{
+    // Create a distance map to store all shortest paths
+    unordered_map<string, unordered_map<string, int>> distance;
+
+    // Initialize the distance map with the graph data
+    for (auto const& city : cities) {
+        distance[city.first] = unordered_map<string, int>();
+        for (auto const& edge : city.second) {
+            distance[city.first][edge.destination_city] = edge.cost;
+        }
+        // Set distance to self and unvisited cities to infinity
+        distance[city.first][city.first] = 0;
+        for (auto const& otherCity : cities) {
+            if (distance[city.first].count(otherCity.first) == 0) {
+                distance[city.first][otherCity.first] = INT_MAX;
+            }
+        }
+    }
+
+    // Relax all edges by considering intermediate vertices
+    for (auto const& intermediate_city : cities) {
+        for (auto const& source_city : cities) {
+            for (auto const& destination_city : cities) {
+                // If there's a shorter path through the intermediate vertex, update the distance
+                if (distance[source_city.first].count(intermediate_city.first) != 0 &&
+                    distance[intermediate_city.first].count(destination_city.first) != 0 &&
+                    distance[source_city.first][intermediate_city.first] != INT_MAX &&
+                    distance[intermediate_city.first][destination_city.first] != INT_MAX &&
+                    distance[source_city.first][intermediate_city.first] + distance[intermediate_city.first][destination_city.first] < distance[source_city.first][destination_city.first]) {
+                    distance[source_city.first][destination_city.first] = distance[source_city.first][intermediate_city.first] + distance[intermediate_city.first][destination_city.first];
+                }
+            }
+        }
+    }
+
+    return distance;
+}
+
+
+
+string CountryGraph::findParent(unordered_map<string, string>& parent, const string& city) {
+    if (parent[city] != city) {
+        parent[city] = findParent(parent, parent[city]);
+    }
+    return parent[city];
+}
+
+void CountryGraph::unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2) {
+    string parent1 = findParent(parent, city1);
+    string parent2 = findParent(parent, city2);
+
+    if (parent1 != parent2) {
+        if (rank[parent1] < rank[parent2]) {
+            parent[parent1] = parent2;
+        }
+        else if (rank[parent1] > rank[parent2]) {
+            parent[parent2] = parent1;
+        }
+        else {
+            parent[parent2] = parent1;
+            rank[parent1]++;
+        }
+    }
+}
+
+void CountryGraph::kruskalMST() {
+    // Define a structure to represent an edge
+    struct Edge {
+        string src;
+        string dest;
+        int cost;
+
+        Edge(const string& source, const string& destination, int cst) : src(source), dest(destination), cost(cst) {}
+    };
+
+    // Comparator function for sorting edges by cost
+    auto compareEdges = [](const Edge& e1, const Edge& e2) {
+        return e1.cost > e2.cost; // Note: Changed to '>' for minimum spanning tree
+        };
+
+    // Priority queue to store edges sorted by cost
+    priority_queue<Edge, vector<Edge>, decltype(compareEdges)> pq(compareEdges);
+
+    // Add all edges to the priority queue
+    for (const auto& city : cities) {
+        for (const auto& edge : city.second) {
+            pq.emplace(city.first, edge.destination_city, edge.cost);
+        }
+    }
+
+    // Set to store parent of each city
+    unordered_map<string, string> parent;
+
+    // Initialize rank for each city
+    unordered_map<string, int> rank;
+    for (const auto& city : cities) {
+        parent[city.first] = city.first; // Each city is its own parent initially
+        rank[city.first] = 0; // Initialize rank to 0
+    }
+
+    // Minimum spanning tree edges
+    set<pair<string, string>> mstEdges;
+
+    int minCost = 0; // Variable to store the total cost of the minimum spanning tree
+
+    // Iterate until all edges are processed or MST is formed
+    while (!pq.empty()) {
+        Edge currentEdge = pq.top();
+        pq.pop();
+
+        string parent1 = findParent(parent, currentEdge.src);
+        string parent2 = findParent(parent, currentEdge.dest);
+
+        // Check if adding this edge forms a cycle
+        if (parent1 != parent2) {
+            // Add edge to MST
+            mstEdges.emplace(min(currentEdge.src, currentEdge.dest), max(currentEdge.src, currentEdge.dest));
+
+            // Add cost to the minimum spanning tree
+            minCost += currentEdge.cost;
+
+            // Merge the sets of source and destination cities
+            unionCities(parent, rank, parent1, parent2);
+        }
+    }
+
+    // Print the minimum spanning tree
+    cout << "Minimum Spanning Tree (Kruskal's Algorithm):" << endl;
+    for (const auto& edge : mstEdges) {
+        cout << edge.first << " -> " << edge.second << endl;
+    }
+    // Print the minimum cost of the minimum spanning tree
+    cout << "Minimum Cost of the Minimum Spanning Tree: " << minCost << endl;
+}
+////////////////////////////////////////////////
+User::User(string username, string password)
+{
+ 
+    this->username = username;
+    this->password = password;
+ 
+}
+
+
+void User::createFiles()
+{
+    string city = username + "_city.txt";
+    const char* cityptr = city.c_str();
+    ofstream outfile_city(cityptr);
+    string edge = username + "_edge.txt";
+    const char* edgeptr = edge.c_str();
+    ofstream outfile_edge(edgeptr);
+}
+
+void User::removeFiles()
+{
+    string city = username + "_city.txt";
+    const char* cityptr = city.c_str();
+    remove(cityptr);
+    string edge = username + "_edge.txt";
+    const char* edgeptr = edge.c_str();
+    remove(edgeptr);
+}
+
+
+bool CountryGraph::is_connected()
+{
+    auto it = cities.begin()->first;
+    DFS(it);
+    if (connected)
+    {
+        cout << "graph is connected\n";
+        return true;
+    }
+    else
+    {
+        cout << "graph is not connected\n";
+        return false;
+    }
 }
