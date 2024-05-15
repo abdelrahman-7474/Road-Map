@@ -56,15 +56,31 @@ public:
 	void unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2);
 	unordered_map<string, unordered_map<string, int>> FloydWarshall();
 	bool is_connected();
+	bool is_graphempty();
 };
-
-class User
+class UserGraph
 {
 public:
 	string username;
-	string password;
-	User(string username, string password);
+	string	password;
+	CountryGraph graph;
+	UserGraph();
+	UserGraph(string username, string password);
+	void loadGraphFromFiles();
+	void storeGraphIntoFiles();
 	void createFiles();
 	void removeFiles();
-
+};
+class UserManager
+{
+	vector<UserGraph>users;
+public:
+	void signUp();
+	UserGraph* logIn();
+	void display();
+	void saveAllGraphs();
+	void loadAllGraphs();
+	void deleteGraph();
+	void loadUsers();
+	void saveUsres();
 };

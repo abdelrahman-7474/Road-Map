@@ -1,5 +1,4 @@
 #include "CountryGraph.h"
-
 using namespace std;
 string  stringformat(string str) {
 	string result = "";
@@ -43,8 +42,10 @@ void MainMenu()
 	cout << "Enter 17 to check graph connectivity" << endl;
 	cout << "Enter 0 to End program " << endl;
 }
-void operation_switch(int operation_number, CountryGraph& Country)
+void operation_switch(int operation_number, UserGraph* user)
 {
+	CountryGraph Country = user->graph;
+	
 	switch (operation_number)
 	{
 	case 0:
@@ -168,14 +169,18 @@ void operation_switch(int operation_number, CountryGraph& Country)
 	case 7:
 	{
 		Country.Delete_AllGraph();
-		cout << "All Graph Deleted successfully ";
+		cout << "All Graph Deleted successfully "<<endl;
 		break;
 	}
 	case 8:
 	{
-		cout << "Display Graph :" << endl;
-		Country.DisplayGraph();
-		cout << "All Graph Displayed ";
+		if (!Country.is_graphempty()) {
+			cout << "Display Graph :" << endl;
+			Country.DisplayGraph();
+			cout << "All Graph Displayed " << endl;
+		}
+		else
+			cout << "Graph is empty " << endl;
 		break;
 	}
 	case 9:
@@ -183,9 +188,15 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		string start_city;
 		cout << "Enter start city " << endl;
 		cin >> start_city;
+		if (Country.FindCity(stringformat(start_city))) {
 		cout << "Display DFS : " << endl;
 		Country.DFS(stringformat(start_city));
 		cout << "DFS is display" << endl;
+		}
+		else
+		{
+			cout << "Start City not in Graph" << endl;
+		}
 		break;
 	}
 	case 10: 
@@ -193,18 +204,33 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		string start_city;
 		cout << "Enter start city " << endl;
 		cin >> start_city;
-		cout << "Display BFS : " << endl;
-		Country.BFS(stringformat(start_city));
-		cout << "BFS is display" << endl;
+		if (Country.FindCity(stringformat(start_city))) {
+			cout << "Display BFS : " << endl;
+			Country.BFS(stringformat(start_city));
+			cout << "BFS is display" << endl;
+		}
+		else
+		{
+			cout << "Start City not in Graph" << endl;
+		}
 		break;
 	}
 	case 11:
 	{
-		
-		cout << "Display msp :" << endl;
-		pair<CountryGraph, int> msp = Country.Prims();
-		cout << "total cost: " << msp.second << endl;
-		cout << "msp Displayed ";
+		if (!Country.is_graphempty()) {
+			if (Country.is_connected()) {
+				cout << "Display msp :" << endl;
+				pair<CountryGraph, int> msp = Country.Prims();
+				cout << "total cost: " << msp.second << endl;
+				cout << "msp Displayed ";
+			}
+			else
+			{
+				cout << "you canot use prims algorithm with unconnected graph you can use kruskal algorithm "<<endl;
+			}
+		}
+		else
+			cout << "Graph is empty" << endl;
 		break;
 	}
 	case 12:
@@ -213,8 +239,14 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Enter the start city"<<endl;
 		string first_city;
 		cin >> first_city;
-		Country.dijkstra_algorithm(stringformat(first_city));
-		cout << "Dijkstra’s algorithm displayed successfully" << endl;
+		if (Country.FindCity(stringformat(first_city))) {
+			Country.dijkstra_algorithm(stringformat(first_city));
+			cout << "Dijkstra’s algorithm displayed successfully" << endl;
+		}
+		else
+		{
+			cout << "start city not in graph " << endl;
+		}
 		break;
 	}
 	case 13:
@@ -232,31 +264,51 @@ void operation_switch(int operation_number, CountryGraph& Country)
 	}
 	case 15: 
 	{
-		cout << "The Kruskal MST Algorithm display is: " << endl;
-		Country.kruskalMST();
+		if (!Country.is_graphempty()) {
+			cout << "The Kruskal MST Algorithm display is: " << endl;
+			Country.kruskalMST();
+		}
+		else
+		{
+			cout << "start city not in graph " << endl;
+		}
 		break;
 	}
 	case 16:
 	{
 		//FloydWarshall Algorithm
 		string start_city;
-		cout << "Enter the start ciry: ";
+		cout << "Enter the first city: ";
 		cin >> start_city;
 		string dist_city;
-		cout << "Enter the start ciry: ";
+		cout << "Enter the second city: ";
 		cin >> dist_city;
-		unordered_map<string, unordered_map<string, int>> dist = Country.FloydWarshall();
-		int distance = dist[stringformat(start_city)][stringformat(dist_city)];
-		cout << endl << "The distance:  " << distance << endl;
+		if (Country.FindCity(stringformat(start_city)) && Country.FindCity(stringformat(dist_city)))
+		{
+			unordered_map<string, unordered_map<string, int>> dist = Country.FloydWarshall();
+			int distance = dist[stringformat(start_city)][stringformat(dist_city)];
+			cout << endl << "The distance:  " << distance << endl;
+		}
+		else
+		{
+			cout << "first city or second city not in graph" << endl;
+		}
 		break;
 	}
 	case 17:
 	{
-		if (Country.is_connected())
-			cout << "All Grpah connected" << endl;
+		if (!Country.is_graphempty())
+		{
+			if (Country.is_connected())
+				cout << "All Grpah connected" << endl;
+			else
+				cout << "Graph disconnected" << endl;
+			break;
+		}
 		else
-			cout << "Graph disconnected" << endl;
-		break;
+		{
+			cout << "Graph is empty"<<endl;
+		}
 	}
 	default:
 	{
@@ -264,172 +316,79 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		break;
 	}
 	}
+	user->graph = Country;
 }
-void ReadFormFiles(CountryGraph& Country,string user)
+void chooseOperation()
 {
-	Country.Read_Cities_FromFiles(user);
-	Country.Read_Edges_FromFiles(user);
+	cout << "Enter 1 to sign up" << endl;
+	cout << "Enter 2 to log in" << endl;
+	cout << "Enter 3 to display graphs names " << endl;
+	cout << "Enter 4 to delete graph " << endl;
+	cout << "enter 0 to exit" << endl;
 }
-void WriteInFiles(CountryGraph& Country,string user)
+UserGraph* userOperation(UserManager& manager, int operationNum, UserGraph* currentUser)
 {
-	Country.Write_Cities_InFiles(user);
-	Country.Write_Edges_InFiles(user);
-}
-void ReadUsers(vector<User>&users)
-{
-	string filename = "users.txt";
-	ifstream infile(filename);
-	if (!infile.is_open()) {
-		cerr << "Error opening file: " << filename << endl;
-		return ;
-	}
-
-	string line;
-	while (getline(infile, line)) {
-		vector<string> data_tokens;
-		string token;
-		istringstream tokenStream(line);
-		while (getline(tokenStream, token, ',')) {
-			data_tokens.push_back(token);
-		}
-
-		if (data_tokens.size() == 2)
-		{
-			User user(data_tokens[0], data_tokens[1]);
-			users.push_back(user);
-		}
-	}
-	infile.close();
-}
-void WriteUsers(vector<User>&users)
-{
-	string filename = "users.txt";
-	ofstream outfile(filename);
-	if (!outfile.is_open()) {
-		cerr << "Error opening file: " << filename << endl;
-		return ;
-	}
-	for (int i = 0; i < users.size(); i++)
+	switch (operationNum)
 	{
-		outfile << users[i].username << "," << users[i].password << endl;
+	case 0:
+	{
+		cout << "program closed" << endl;
+		break;
 	}
-	outfile.close();
-}
-void userMenu()
-{
-	cout << "Enter 1 to create graph\n";
-	cout << "Enter 2 to display all graphs\n";
-	cout << "Enter 3 to log in into graph\n";
-	cout << "Enter 4 to delete graph\n";
-	cout << "Enter 0 to close the program\n";
+	case 1:
+	{
+		manager.signUp();
+	}
+	case 2:
+	{
+		currentUser = manager.logIn();
+		break;
+	}
+	case 3:
+	{
+		manager.display();
+		currentUser = nullptr;
+		break;
+	}
+	case 4:
+	{
+		manager.deleteGraph();
+		currentUser = nullptr;
+		break;
+	}
+	default: {
+		currentUser = nullptr;
+		break;
+	}
+	}
+	return currentUser;
 }
 int main()
 {
-	vector<User>users;
-	ReadUsers(users);
-	int userOperationNumber = -1;
+	UserManager manager;
+	UserGraph* curretnuser = nullptr;
+	manager.loadUsers();
+	manager.loadAllGraphs();
+	int operationNum = -1;
 	cout << "\t\t\t--------------------- HI you are in ROAD MAP PROJECT -------------------" << endl;
-
-	while (userOperationNumber)
+	while (operationNum)
 	{
-		userMenu();
-		cout << "choose your operation: ";
-		cin >> userOperationNumber;
-		switch (userOperationNumber)
-		{
-		case 0:
-		{
-			cout << "program has closed" << endl;
-			break;
-		}
-		case 1:
-		{
-			string username;
-			string password;
-			cout << "Enter username: ";
-			cin >> username;
-			cout << "Enter password: ";
-			cin >> password;
-			for (int i = 0; i < users.size(); i++)
-			{
-				if (users[i].username == stringformat(username))
-				{
-					cout << "graph already exist" << endl;
-					break;
-				}
+		chooseOperation();
+		cout << "enter operation number: ";
+		cin >> operationNum;
+		curretnuser = userOperation(manager, operationNum, curretnuser);
+		if (curretnuser != nullptr && operationNum != 0) {
+			int opNum = -1;
+			while (opNum) {
+				MainMenu();
+				cout << "Enter your operation number : ";
+				cin >> opNum;
+				operation_switch(opNum, curretnuser);
 			}
-			User user(stringformat(username), password);
-			users.push_back(user);
-			user.createFiles();
-			break;
-		}
-		case 2:
-		{
-			for (int i = 0; i < users.size(); i++)
-			{
-				cout << users[i].username << endl;
-			}
-			break;
-		}
-		case 3:
-		{
-			string username;
-			string password;
-			cout << "Enter username: ";
-			cin >> username;
-			cout << "Enter password: ";
-			cin >> password;
-			bool flage = false;
-			for (int i = 0; i < users.size(); i++)
-			{
-				
-				if (users[i].username == stringformat(username) && users[i].password == password)
-				{
-					flage = true;
-					CountryGraph Country;
-					Country.applychanges = false;
-					ReadFormFiles(Country, stringformat(username));
-					Country.applychanges = true;
-					int operation_number=-1;
-					while (operation_number)
-					{
-						MainMenu();
-						cout << "Enter your operation number : ";
-						cin >> operation_number;
-						operation_switch(operation_number, Country);
-					}
-					WriteInFiles(Country, stringformat(username));
-					break;
-				}
-			}
-			if(!flage)
-			cout << "can not find user, check username or password" << endl;
-			break;
-		}
-		case 4:
-		{
-			string username;
-			string password;
-			cout << "Enter username: ";
-			cin >> username;
-			cout << "Enter password: ";
-			cin >> password;
-			for (int i = 0; i < users.size(); i++)
-			{
-				if (users[i].username == stringformat(username) && users[i].password == password)
-				{
-					users[i].removeFiles();
-					users.erase(users.begin() + i);
-					break;
-				}
-			}
-			break;
-		}
-		default:
-			cout << "invalid operation" << endl;
-			break;
 		}
 	}
-	cout << "\t\t\t--------------------- ROAD MAP program End bye bye user -------------------"<<endl;
-	WriteUsers(users);
+	cout << "\t\t\t--------------------- ROAD MAP program End bye bye user -------------------" << endl;
+	manager.saveAllGraphs();
+	manager.saveUsres();
+
 }

@@ -1,6 +1,177 @@
 #include "CountryGraph.h"
 
 using namespace std;
+// start abdelrahman ahmed :
+UserGraph::UserGraph(string username, string password)
+{
+    this->username = username;
+    this->password = password;
+}
+
+void UserGraph::loadGraphFromFiles()
+{
+    string city = username + "_city.txt";
+    string edge = username + "_edge.txt";
+    graph.Read_Cities_FromFiles(city);
+    graph.Read_Edges_FromFiles(edge);
+}
+
+void UserGraph::storeGraphIntoFiles()
+{
+    string city = username + "_city.txt";
+    string edge = username + "_edge.txt";
+    graph.Write_Cities_InFiles(city);
+    graph.Write_Edges_InFiles(edge);
+}
+
+void UserGraph::createFiles()
+{
+    string city = username + "_city.txt";
+    const char* cityptr = city.c_str();
+    ofstream outfile_city(cityptr);
+    string edge = username + "_edge.txt";
+    const char* edgeptr = edge.c_str();
+    ofstream outfile_edge(edgeptr);
+}
+
+void UserGraph::removeFiles()
+{
+    string city = username + "_city.txt";
+    const char* cityptr = city.c_str();
+    remove(cityptr);
+    string edge = username + "_edge.txt";
+    const char* edgeptr = edge.c_str();
+    remove(edgeptr);
+}
+
+void UserManager::signUp()
+{
+    string username;
+    string password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+    for (auto& user : users)
+    {
+        if (user.username == username && user.password == password)
+        {
+            cout << "user already exist, log in with it" << endl;
+            return;
+        }
+    }
+
+    UserGraph newuser(username, password);
+    newuser.createFiles();
+    users.push_back(newuser);
+    cout << "regestrition done now log in" << endl;
+}
+
+UserGraph* UserManager::logIn()
+{
+    string username;
+    string password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+    for (auto& user : users)
+    {
+        if (user.username == username && user.password == password)
+        {
+            return &user;
+        }
+    }
+    cout << "can not find user" << endl;
+    return nullptr;
+}
+
+void UserManager::display()
+{
+    cout << "here all usernames\n";
+    for (auto& user : users)
+    {
+        cout << user.username << endl;
+    }
+}
+
+void UserManager::saveAllGraphs()
+{
+    for (auto& user : users)
+    {
+        user.storeGraphIntoFiles();
+    }
+}
+
+void UserManager::loadAllGraphs()
+{
+    for (auto& user : users)
+    {
+        user.loadGraphFromFiles();
+    }
+}
+
+void UserManager::deleteGraph()
+{
+    string username;
+    string password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+    for (int i = 0; i < users.size(); i++)
+    {
+        if (users[i].username == username && users[i].password == password)
+        {
+            users[i].removeFiles();
+            users.erase(users.begin() + i);
+            return;
+        }
+    }
+    cout << "user you entered no found\n";
+    display();
+}
+
+void UserManager::loadUsers()
+{
+    string filename = "USRES.txt";
+    ifstream infile(filename);
+    if (!infile.is_open()) {
+        cerr << "Error opening file: " << filename << endl;
+        return;
+    }
+
+    string line;
+    while (getline(infile, line))
+    {
+        vector<string> data_tokens;
+        string token;
+        istringstream tokenStream(line);
+        while (getline(tokenStream, token, ',')) {
+            data_tokens.push_back(token);
+        }
+        UserGraph user(data_tokens[0], data_tokens[1]);
+        users.push_back(user);
+    }
+    infile.close();
+}
+
+void UserManager::saveUsres()
+{
+    string filename = "USRES.txt";
+    ofstream outfile(filename);
+    if (!outfile.is_open()) {
+        cerr << "Error opening file: " << filename << endl;
+        return;
+    }
+    for (auto& user : users)
+    {
+        outfile << user.username << "," << user.password << endl;
+    }
+    outfile.close();
+}
+// End abdelrahman ahmed 
+// start abdelrahman tamer 
 void CountryGraph::AddCity(string newcity) {
 
     cities[newcity];//o(1)
@@ -137,10 +308,9 @@ void CountryGraph::DisplayEdges()
         }
 }
 
-int CountryGraph::Write_Cities_InFiles(string username)
+int CountryGraph::Write_Cities_InFiles(string filename)
 {
-    string filename =username+ "_city.txt";
-    ofstream clearFile(filename);
+    
     ofstream outfile(filename);
     if (!outfile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -153,10 +323,8 @@ int CountryGraph::Write_Cities_InFiles(string username)
     outfile.close();
 }
 
-int CountryGraph::Write_Edges_InFiles(string username)
+int CountryGraph::Write_Edges_InFiles(string filename)
 {
-    string filename = username + "_edge.txt";
-    ofstream clearFile(filename);
     ofstream outfile(filename);
     if (!outfile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -171,9 +339,8 @@ int CountryGraph::Write_Edges_InFiles(string username)
     outfile.close();
 }
 
-int CountryGraph::Read_Cities_FromFiles(string username)
+int CountryGraph::Read_Cities_FromFiles(string filename)
 {
-    string filename = username + "_city.txt";
     ifstream infile(filename);
     if (!infile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -183,14 +350,14 @@ int CountryGraph::Read_Cities_FromFiles(string username)
     string line;
     while (getline(infile, line))
     {
+        if(line!="")
         AddCity(line);
     }
     infile.close();
 }
 
-int CountryGraph::Read_Edges_FromFiles(string username)
+int CountryGraph::Read_Edges_FromFiles(string filename)
 {
-    string filename = username + "_edge.txt";
 
     ifstream infile(filename);
     if (!infile.is_open()) {
@@ -215,57 +382,66 @@ int CountryGraph::Read_Edges_FromFiles(string username)
     infile.close();
 }
 
+bool CountryGraph::is_graphempty()
+{
+    return cities.empty();
+}
+//end abdelrahman tamer
+//start abdelrahman azzat  
 void CountryGraph::BFS(string start)
 {
-    unordered_set<string> visited;
-    queue<string>temp;
-    visited.insert(start);
-    temp.push(start);
-    int levelsize = 0;
-    cout << start << endl;
+    
+        unordered_set<string> visited;
+        queue<string>temp;
+        visited.insert(start);
+        temp.push(start);
+        int levelsize = 0;
+        cout << start << endl;
 
-    while (!temp.empty())
-    {
-        int levelSize = temp.size();
-        for (int i = 0; i < levelSize; i++)
+        while (!temp.empty())
         {
-
-            string current = temp.front();
-            temp.pop();
-            for (const auto& nextEdge : cities.at(current))
+            int levelSize = temp.size();
+            for (int i = 0; i < levelSize; i++)
             {
-                string next = nextEdge.destination_city;
-                if (visited.count(next) == 0)
+
+                string current = temp.front();
+                temp.pop();
+                for (const auto& nextEdge : cities.at(current))
                 {
-                    visited.insert(next);
-                    temp.push(next);
-                    cout << next << " ";
+                    string next = nextEdge.destination_city;
+                    if (visited.count(next) == 0)
+                    {
+                        visited.insert(next);
+                        temp.push(next);
+                        cout << next << " ";
+                    }
                 }
             }
+            cout << endl;
         }
-        cout << endl;
-    }
-   
 
-   
+
+    
+    
 }
-
+//end abdelrahman azzat 
+//start shahd Hany 
 void CountryGraph::DFS(string start_city) {
     unordered_map<string, bool> visited;
     stack<string> vertex_stack;
     vertex_stack.push(start_city);
+    visited[start_city] = true;
     while (!vertex_stack.empty()) {
         string current_city = vertex_stack.top();
         vertex_stack.pop();
 
         // Process the current city 
         cout  << current_city << endl;
-        visited[current_city] = true;
         // Explore unvisited neighbors
         for (auto& edge : cities[current_city]) {
             string neighbor_city = edge.destination_city;
             if (!visited[neighbor_city]) {
-                //  visited[neighbor_city] = true;
+                visited[neighbor_city] = true;
                 vertex_stack.push(neighbor_city);
             }
         }
@@ -280,9 +456,11 @@ void CountryGraph::DFS(string start_city) {
         connected = false;
     }
 }
-
+//end  shahd Hany
+// start Mai 
 pair<CountryGraph, int> CountryGraph::Prims() {
     // pq sort edges acendingly 
+    
     priority_queue <pair<int, pair<string, string>>, vector<pair<int, pair<string, string>>>, greater<pair<int, pair<string, string>>>> pq;
     CountryGraph msp;
     unordered_map<string, bool> vis;
@@ -323,50 +501,6 @@ pair<CountryGraph, int> CountryGraph::Prims() {
         }
     }
     return { msp, total_cost };
-}
-void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
-{
-    unordered_map<string, int> costs; //for sorting each city with it’s updated distance
-    unordered_map<string, bool> visited; // for marking the cities the dijkstra’s_algorithm already visit 
-    unordered_map<string, string> previous_node;
-    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> next_node; // the priority_queue using for sort the nodes using thier costs , we need the next node that one with min distance 
-
-    if (is_connected()) {
-        for (auto node : cities) {
-            //set all the distances with infinity value for using it in comparing
-            costs[node.first] = numeric_limits<int>::max();
-            visited[node.first] = 0;
-        }
-
-        costs[source] = 0;
-        next_node.push({ costs[source], source });
-
-        while (!next_node.empty()) {
-            auto current_city = next_node.top();
-            string current = current_city.second;
-            next_node.pop(); //remove this city cause it already selected (visited)
-            if (!visited[current]) //second---> string in the priority_queue
-            {
-                visited[current] = 1;
-                for (auto neighbours : cities[current]) {
-                    if (costs[current] + neighbours.cost < costs[neighbours.destination_city] && !visited[neighbours.destination_city]) {
-
-                        costs[neighbours.destination_city] = costs[current] + neighbours.cost;
-                        previous_node[neighbours.destination_city] = current;
-                        next_node.push({ costs[neighbours.destination_city] ,neighbours.destination_city });
-
-                    }
-                }
-            }
-        }
-
-        cout << "Shortest distances from " << source << ":\n";
-        for (auto distance : costs) {
-            cout << distance.first << " : " << distance.second << " from " << previous_node[distance.first] << endl;
-        }
-    }
-    else
-        cout << "Dijkstra algorithm canot applied on disconnected graph "<<endl;
 }
 
 void CountryGraph::ReAddCity(pair<string, list<edge>>& city) {
@@ -442,7 +576,70 @@ void CountryGraph::ApplyRChanges(pair<int, pair<string, list<edge>>>& change) {
     }
     applychanges = true;
 }
+//end Mai 
+//start Safwa 
+void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
+{
 
+    unordered_map<string, int> costs; //for sorting each city with it’s updated distance
+    unordered_map<string, bool> visited; // for marking the cities the dijkstra’s_algorithm already visit 
+    unordered_map<string, string> previous_node;
+    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> next_node; // the priority_queue using for sort the nodes using thier costs , we need the next node that one with min distance 
+
+
+    for (auto node : cities) {
+        //set all the distances with infinity value for using it in comparing
+        costs[node.first] = numeric_limits<int>::max();
+        visited[node.first] = 0;
+    }
+
+    costs[source] = 0;
+    previous_node[source] = " The start city";
+    next_node.push({ costs[source], source });
+
+    while (!next_node.empty()) {
+        auto current_city = next_node.top();
+        string current = current_city.second;
+        next_node.pop(); //remove this city cause it already selected (visited)
+        if (!visited[current]) //second---> string in the priority_queue
+        {
+            visited[current] = 1;
+            for (auto neighbours : cities[current]) {
+                if (costs[current] + neighbours.cost < costs[neighbours.destination_city] && !visited[neighbours.destination_city]) {
+
+                    costs[neighbours.destination_city] = costs[current] + neighbours.cost;
+                    previous_node[neighbours.destination_city] = current;
+                    next_node.push({ costs[neighbours.destination_city] ,neighbours.destination_city });
+
+                }
+            }
+        }
+    }
+
+    cout << "Shortest distances from " << source << ":\n";
+    for (auto distance : costs) {
+        cout << distance.first << " : ";
+        if (distance.second == numeric_limits<int>::max())
+        {
+            cout << " it is disconnected city from start city " << endl;
+        }
+        else {
+            cout << distance.second;
+            if (previous_node[distance.first] == " The start city ")
+            {
+                cout << previous_node[distance.first] << endl;
+            }
+            else
+            {
+                cout << " from " << previous_node[distance.first] << endl;
+            }
+        }
+    }
+
+
+}
+// end Safwa
+//start Rana 
 unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
 {
     // Create a distance map to store all shortest paths
@@ -576,35 +773,7 @@ void CountryGraph::kruskalMST() {
     // Print the minimum cost of the minimum spanning tree
     cout << "Minimum Cost of the Minimum Spanning Tree: " << minCost << endl;
 }
-
-User::User(string username, string password)
-{
- 
-    this->username = username;
-    this->password = password;
- 
-}
-
-void User::createFiles()
-{
-    string city = username + "_city.txt";
-    const char* cityptr = city.c_str();
-    ofstream outfile_city(cityptr);
-    string edge = username + "_edge.txt";
-    const char* edgeptr = edge.c_str();
-    ofstream outfile_edge(edgeptr);
-}
-
-void User::removeFiles()
-{
-    string city = username + "_city.txt";
-    const char* cityptr = city.c_str();
-    remove(cityptr);
-    string edge = username + "_edge.txt";
-    const char* edgeptr = edge.c_str();
-    remove(edgeptr);
-}
-
+//end Rana
 bool CountryGraph::is_connected()
 {
     auto it = cities.begin()->first;
