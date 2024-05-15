@@ -1,7 +1,6 @@
 #include "CountryGraph.h"
 
 using namespace std;
-const float INF = INFINITY;
 void CountryGraph::AddCity(string newcity) {
 
     cities[newcity];//o(1)
@@ -18,19 +17,19 @@ void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
         cout << "you canot add edge between same city" << endl;
         return;
     }
+    AddCity(city_1);
+    AddCity(city_2);
     if (!FindEdge(city_1, city_2))
     {
-        //cairo alex 10
+        
         edge newedge1;
-        newedge1.destination_city = city_1;//cairo
-        newedge1.cost = cost;//10
-        cities[city_2].push_back(newedge1);//o(1)
-        //alex.list(cairo,10)
+        newedge1.destination_city = city_1;
+        newedge1.cost = cost;
+        cities[city_2].push_back(newedge1);
         edge newedge2;
-        newedge2.destination_city = city_2;//alex
-        newedge2.cost = cost;//10
-        cities[city_1].push_back(newedge2);//o(1)
-        //cairo.list(alex,10)
+        newedge2.destination_city = city_2;
+        newedge2.cost = cost;
+        cities[city_1].push_back(newedge2);
 
         if (applychanges)
             undoStack.push({ 1, make_pair(city_1, list<edge>{newedge2})});
@@ -152,7 +151,6 @@ int CountryGraph::Write_Cities_InFiles(string username)
         outfile << city.first << endl;
     }
     outfile.close();
-    cout << " City saved to file: " << filename << endl;
 }
 
 int CountryGraph::Write_Edges_InFiles(string username)
@@ -171,7 +169,6 @@ int CountryGraph::Write_Edges_InFiles(string username)
 
         }
     outfile.close();
-    cout << " Edges saved to file: " << filename << endl;
 }
 
 int CountryGraph::Read_Cities_FromFiles(string username)
@@ -222,29 +219,35 @@ void CountryGraph::BFS(string start)
 {
     unordered_set<string> visited;
     queue<string>temp;
-
     visited.insert(start);
     temp.push(start);
-    int levelnum = 0;
+    int levelsize = 0;
+    cout << start << endl;
 
     while (!temp.empty())
     {
-        string current = temp.front();
-        temp.pop();
-
-        for (const auto& nextEdge : cities.at(current))
+        int levelSize = temp.size();
+        for (int i = 0; i < levelSize; i++)
         {
-            string next = nextEdge.destination_city;
-            if (temp.empty())
-                levelnum++;
-            if (visited.count(next) == 0)
+
+            string current = temp.front();
+            temp.pop();
+            for (const auto& nextEdge : cities.at(current))
             {
-                visited.insert(next);
-                temp.push(next);
-                cout << next << " ";
+                string next = nextEdge.destination_city;
+                if (visited.count(next) == 0)
+                {
+                    visited.insert(next);
+                    temp.push(next);
+                    cout << next << " ";
+                }
             }
         }
+        cout << endl;
     }
+   
+
+   
 }
 
 void CountryGraph::DFS(string start_city) {
@@ -256,7 +259,7 @@ void CountryGraph::DFS(string start_city) {
         vertex_stack.pop();
 
         // Process the current city 
-        cout << "city: " << current_city << " ";
+        cout  << current_city << endl;
         visited[current_city] = true;
         // Explore unvisited neighbors
         for (auto& edge : cities[current_city]) {
@@ -328,39 +331,42 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
     unordered_map<string, string> previous_node;
     priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> next_node; // the priority_queue using for sort the nodes using thier costs , we need the next node that one with min distance 
 
+    if (is_connected()) {
+        for (auto node : cities) {
+            //set all the distances with infinity value for using it in comparing
+            costs[node.first] = numeric_limits<int>::max();
+            visited[node.first] = 0;
+        }
 
-    for (auto node : cities) {
-        //set all the distances with infinity value for using it in comparing
-        costs[node.first] = numeric_limits<int>::max();
-        visited[node.first] = 0;
-    }
+        costs[source] = 0;
+        next_node.push({ costs[source], source });
 
-    costs[source] = 0;
-    next_node.push({ costs[source], source });
+        while (!next_node.empty()) {
+            auto current_city = next_node.top();
+            string current = current_city.second;
+            next_node.pop(); //remove this city cause it already selected (visited)
+            if (!visited[current]) //second---> string in the priority_queue
+            {
+                visited[current] = 1;
+                for (auto neighbours : cities[current]) {
+                    if (costs[current] + neighbours.cost < costs[neighbours.destination_city] && !visited[neighbours.destination_city]) {
 
-    while (!next_node.empty()) {
-        auto current_city = next_node.top();
-        string current = current_city.second;
-        next_node.pop(); //remove this city cause it already selected (visited)
-        if (!visited[current]) //second---> string in the priority_queue
-        {
-            visited[current] = 1;
-            for (auto neighbours : cities[current]) {
-                if (costs[current] + neighbours.cost < costs[neighbours.destination_city] && !visited[neighbours.destination_city]) {
+                        costs[neighbours.destination_city] = costs[current] + neighbours.cost;
+                        previous_node[neighbours.destination_city] = current;
+                        next_node.push({ costs[neighbours.destination_city] ,neighbours.destination_city });
 
-                    costs[neighbours.destination_city] = costs[current] + neighbours.cost;
-                    previous_node[neighbours.destination_city] = current;
-                    next_node.push({ costs[neighbours.destination_city] ,neighbours.destination_city });
-
+                    }
                 }
             }
         }
-    }
 
-    cout << "Shortest distances from " << source << ":\n";
-    for (auto distance : costs) {
-        cout << distance.first << " : " << distance.second << " from " << previous_node[distance.first] << endl;
+        cout << "Shortest distances from " << source << ":\n";
+        for (auto distance : costs) {
+            cout << distance.first << " : " << distance.second << " from " << previous_node[distance.first] << endl;
+        }
     }
+    else
+        cout << "Dijkstra algorithm canot applied on disconnected graph "<<endl;
 }
 
 void CountryGraph::ReAddCity(pair<string, list<edge>>& city) {
@@ -436,7 +442,6 @@ void CountryGraph::ApplyRChanges(pair<int, pair<string, list<edge>>>& change) {
     }
     applychanges = true;
 }
-////////////////////////////////////////////////
 
 unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
 {
@@ -476,8 +481,6 @@ unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
 
     return distance;
 }
-
-
 
 string CountryGraph::findParent(unordered_map<string, string>& parent, const string& city) {
     if (parent[city] != city) {
@@ -573,7 +576,7 @@ void CountryGraph::kruskalMST() {
     // Print the minimum cost of the minimum spanning tree
     cout << "Minimum Cost of the Minimum Spanning Tree: " << minCost << endl;
 }
-////////////////////////////////////////////////
+
 User::User(string username, string password)
 {
  
@@ -581,7 +584,6 @@ User::User(string username, string password)
     this->password = password;
  
 }
-
 
 void User::createFiles()
 {
@@ -603,19 +605,16 @@ void User::removeFiles()
     remove(edgeptr);
 }
 
-
 bool CountryGraph::is_connected()
 {
     auto it = cities.begin()->first;
     DFS(it);
     if (connected)
     {
-        cout << "graph is connected\n";
         return true;
     }
     else
     {
-        cout << "graph is not connected\n";
         return false;
     }
 }

@@ -1,6 +1,26 @@
 #include "CountryGraph.h"
 
 using namespace std;
+string  stringformat(string str) {
+	string result = "";
+	result += toupper(str[0]);
+	for (int i = 1; i < str.size(); i++) {
+		result += tolower(str[i]);
+	}
+	return result;
+}
+int checkcost(int cost)
+{
+	while (cost < 0)
+	{
+		cout << "cost must be nonnegative number "<<endl;
+		cout << "please Enter postive number for cost :";
+		cin >> cost;
+	}
+	return cost;
+		
+
+}
 void MainMenu()
 {
 	cout << "\t\t\t--------------------- Main Menu ------------------- :" << endl;
@@ -27,12 +47,17 @@ void operation_switch(int operation_number, CountryGraph& Country)
 {
 	switch (operation_number)
 	{
+	case 0:
+	{
+		cout << "logout successfully " << endl;
+		break;
+	}
 	case 1:
 	{
 		string city;
 		cout << "Enter added city name :";
 		cin >> city;
-		Country.AddCity(city);
+		Country.AddCity(stringformat(city));
 		cout << "City " << city << " Added successfully" << endl;
 		break;
 	}
@@ -45,9 +70,10 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cin >> city_1;
 		cout << "Enter name of second destination city :";
 		cin >> city_2;
-		cout << "Enter cost of the road :";
+		cout << "Enter cost of the road (Hint : cost must be nonnegative):";
 		cin >> cost;
-		Country.AddEdge(city_1, city_2, cost);
+		cost = checkcost(cost);
+		Country.AddEdge(stringformat(city_1), stringformat(city_2), cost);
 		cout << "Edge between City " << city_1 << " and City " << city_2 << " with cost " << cost << " Added successfully" << endl;
 		break;
 	}
@@ -56,7 +82,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		string city;
 		cout << "Enter city name to search :";
 		cin >> city;
-		if (Country.FindCity(city))
+		if (Country.FindCity(stringformat(city)))
 		{
 			cout << "City Founded " << endl;
 		}
@@ -68,10 +94,10 @@ void operation_switch(int operation_number, CountryGraph& Country)
 			cin >> choosenumber;
 			if (choosenumber == 1)
 			{
-				Country.AddCity(city);
+				Country.AddCity(stringformat(city));
 			}
 		}
-
+		break;
 	}
 	case 4:
 	{
@@ -84,7 +110,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cin >> city_2;
 		cout << "Enter cost of the road :";
 		cin >> cost;
-		if (Country.FindEdge(city_1, city_2))
+		if (Country.FindEdge(stringformat(city_1), stringformat(city_2)))
 		{
 			cout << "Edge between City" << city_1 << "and City " << city_2 << " Founded successfully" << endl;
 		}
@@ -96,7 +122,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 			cin >> choosenumber;
 			if (choosenumber == 1)
 			{
-				Country.AddEdge(city_1, city_2, cost);
+				Country.AddEdge(stringformat(city_1), stringformat(city_2), cost);
 			}
 		}
 		break;
@@ -106,7 +132,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		string deletecity;
 		cout << "Enter name of Deleted city : ";
 		cin >> deletecity;
-		if (Country.FindCity(deletecity))
+		if (Country.FindCity(stringformat(deletecity)))
 		{
 			Country.DeleteCity(deletecity);
 			cout << "City " << deletecity << " Deleted  successfully" << endl;
@@ -128,9 +154,9 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cin >> city_2;
 		cout << "Enter cost of deleted edge :";
 		cin >> cost;
-		if (Country.FindEdge(city_1, city_2))
+		if (Country.FindEdge(stringformat(city_1), stringformat(city_2)))
 		{
-			Country.DeleteEdge(city_1, city_2);
+			Country.DeleteEdge(stringformat(city_1), stringformat(city_2));
 			cout << "Edge between City " << city_1 << "and City " << city_2 << " with cost " << cost << " deleted successfully" << endl;
 		}
 		else
@@ -158,7 +184,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Enter start city " << endl;
 		cin >> start_city;
 		cout << "Display DFS : " << endl;
-		Country.DFS(start_city);
+		Country.DFS(stringformat(start_city));
 		cout << "DFS is display" << endl;
 		break;
 	}
@@ -168,7 +194,7 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Enter start city " << endl;
 		cin >> start_city;
 		cout << "Display BFS : " << endl;
-		Country.BFS(start_city);
+		Country.BFS(stringformat(start_city));
 		cout << "BFS is display" << endl;
 		break;
 	}
@@ -187,26 +213,26 @@ void operation_switch(int operation_number, CountryGraph& Country)
 		cout << "Enter the start city"<<endl;
 		string first_city;
 		cin >> first_city;
-		Country.dijkstra_algorithm(first_city);
+		Country.dijkstra_algorithm(stringformat(first_city));
 		cout << "Dijkstra’s algorithm displayed successfully" << endl;
 		break;
 	}
 	case 13:
 	{
 		Country.Undo();
-		cout << "operation done successfully";
+		cout << "Operation done successfully";
 		break;
 	}
 	case 14:
 	{
 
 		Country.Redo();
-		cout << "operation done successfully";
+		cout << "Operation done successfully";
 		break;
 	}
 	case 15: 
 	{
-		cout << "the Kruskal MST Algorithm display is: " << endl;
+		cout << "The Kruskal MST Algorithm display is: " << endl;
 		Country.kruskalMST();
 		break;
 	}
@@ -214,23 +240,27 @@ void operation_switch(int operation_number, CountryGraph& Country)
 	{
 		//FloydWarshall Algorithm
 		string start_city;
-		cout << "enter the start ciry: ";
+		cout << "Enter the start ciry: ";
 		cin >> start_city;
 		string dist_city;
-		cout << "enter the start ciry: ";
+		cout << "Enter the start ciry: ";
 		cin >> dist_city;
 		unordered_map<string, unordered_map<string, int>> dist = Country.FloydWarshall();
-		int distance = dist[start_city][dist_city];
-		cout << endl << "the distanceeeee:  " << distance << endl;
+		int distance = dist[stringformat(start_city)][stringformat(dist_city)];
+		cout << endl << "The distance:  " << distance << endl;
 		break;
 	}
 	case 17:
 	{
-		Country.is_connected();
+		if (Country.is_connected())
+			cout << "All Grpah connected" << endl;
+		else
+			cout << "Graph disconnected" << endl;
+		break;
 	}
 	default:
 	{
-		cout << "invalid operation number";
+		cout << "invalid operation number"<<endl;
 		break;
 	}
 	}
@@ -284,7 +314,6 @@ void WriteUsers(vector<User>&users)
 		outfile << users[i].username << "," << users[i].password << endl;
 	}
 	outfile.close();
-	cout << " users saved to file: " << filename << endl;
 }
 void userMenu()
 {
@@ -294,8 +323,6 @@ void userMenu()
 	cout << "Enter 4 to delete graph\n";
 	cout << "Enter 0 to close the program\n";
 }
-
-
 int main()
 {
 	vector<User>users;
@@ -310,6 +337,11 @@ int main()
 		cin >> userOperationNumber;
 		switch (userOperationNumber)
 		{
+		case 0:
+		{
+			cout << "program has closed" << endl;
+			break;
+		}
 		case 1:
 		{
 			string username;
@@ -320,13 +352,13 @@ int main()
 			cin >> password;
 			for (int i = 0; i < users.size(); i++)
 			{
-				if (users[i].username == username)
+				if (users[i].username == stringformat(username))
 				{
 					cout << "graph already exist" << endl;
 					break;
 				}
 			}
-			User user(username, password);
+			User user(stringformat(username), password);
 			users.push_back(user);
 			user.createFiles();
 			break;
@@ -347,13 +379,16 @@ int main()
 			cin >> username;
 			cout << "Enter password: ";
 			cin >> password;
+			bool flage = false;
 			for (int i = 0; i < users.size(); i++)
 			{
-				if (users[i].username == username && users[i].password == password)
+				
+				if (users[i].username == stringformat(username) && users[i].password == password)
 				{
+					flage = true;
 					CountryGraph Country;
 					Country.applychanges = false;
-					ReadFormFiles(Country,username);
+					ReadFormFiles(Country, stringformat(username));
 					Country.applychanges = true;
 					int operation_number=-1;
 					while (operation_number)
@@ -363,10 +398,11 @@ int main()
 						cin >> operation_number;
 						operation_switch(operation_number, Country);
 					}
-					WriteInFiles(Country,username);
+					WriteInFiles(Country, stringformat(username));
 					break;
 				}
 			}
+			if(!flage)
 			cout << "can not find user, check username or password" << endl;
 			break;
 		}
@@ -380,18 +416,13 @@ int main()
 			cin >> password;
 			for (int i = 0; i < users.size(); i++)
 			{
-				if (users[i].username == username && users[i].password == password)
+				if (users[i].username == stringformat(username) && users[i].password == password)
 				{
 					users[i].removeFiles();
 					users.erase(users.begin() + i);
 					break;
 				}
 			}
-			break;
-		}
-		case 0:
-		{
-			cout << "program has closed" << endl;
 			break;
 		}
 		default:

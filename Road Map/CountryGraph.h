@@ -50,14 +50,11 @@ public:
 	void ReAddCity(pair<string, list<edge>>&);
 	edge GetEdge(string city_1, string city_2);
 	bool applychanges;
-
-
 	void kruskalMST();
-	int findCityIndex(const string& cityName);
+	//int findCityIndex(const string& cityName);
 	string findParent(unordered_map<string, string>& parent, const string& city);
 	void unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2);
 	unordered_map<string, unordered_map<string, int>> FloydWarshall();
-
 	bool is_connected();
 };
 
