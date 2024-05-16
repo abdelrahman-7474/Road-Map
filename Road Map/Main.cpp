@@ -270,7 +270,7 @@ void operation_switch(int operation_number, UserGraph* user)
 		}
 		else
 		{
-			cout << "start city not in graph " << endl;
+			cout << "Graph is empty " << endl;
 		}
 		break;
 	}
@@ -285,8 +285,7 @@ void operation_switch(int operation_number, UserGraph* user)
 		cin >> dist_city;
 		if (Country.FindCity(stringformat(start_city)) && Country.FindCity(stringformat(dist_city)))
 		{
-			unordered_map<string, unordered_map<string, int>> dist = Country.FloydWarshall();
-			int distance = dist[stringformat(start_city)][stringformat(dist_city)];
+			int distance = Country.FloydWarshall(stringformat(start_city), stringformat(dist_city));
 			cout << endl << "The distance:  " << distance << endl;
 		}
 		else

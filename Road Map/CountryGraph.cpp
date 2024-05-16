@@ -188,8 +188,6 @@ void CountryGraph::AddEdge(string city_1, string city_2, int cost) {
         cout << "you canot add edge between same city" << endl;
         return;
     }
-    AddCity(city_1);
-    AddCity(city_2);
     if (!FindEdge(city_1, city_2))
     {
         
@@ -388,41 +386,37 @@ bool CountryGraph::is_graphempty()
 }
 //end abdelrahman tamer
 //start abdelrahman azzat  
+
 void CountryGraph::BFS(string start)
 {
-    
-        unordered_set<string> visited;
-        queue<string>temp;
-        visited.insert(start);
-        temp.push(start);
-        int levelsize = 0;
-        cout << start << endl;
+    unordered_set<string> visited;
+    queue<string>temp;
+    visited.insert(start);
+    temp.push(start);
+    int levelsize = 0;
+    cout << start << endl;
 
-        while (!temp.empty())
+    while (!temp.empty())
+    {
+        int levelSize = temp.size();
+        for (int i = 0; i < levelSize; i++)
         {
-            int levelSize = temp.size();
-            for (int i = 0; i < levelSize; i++)
-            {
 
-                string current = temp.front();
-                temp.pop();
-                for (const auto& nextEdge : cities.at(current))
+            string current = temp.front();
+            temp.pop();
+            for (const auto& nextEdge : cities.at(current))
+            {
+                string next = nextEdge.destination_city;
+                if (visited.count(next) == 0)
                 {
-                    string next = nextEdge.destination_city;
-                    if (visited.count(next) == 0)
-                    {
-                        visited.insert(next);
-                        temp.push(next);
-                        cout << next << " ";
-                    }
+                    visited.insert(next);
+                    temp.push(next);
+                    cout << next << " ";
                 }
             }
-            cout << endl;
         }
-
-
-    
-    
+        cout << endl;
+    }
 }
 //end abdelrahman azzat 
 //start shahd Hany 
@@ -447,14 +441,7 @@ void CountryGraph::DFS(string start_city) {
         }
 
     }
-    if (visited.size() == cities.size())
-    {
-       connected=true;
-    }
-    else
-    {
-        connected = false;
-    }
+   
 }
 //end  shahd Hany
 // start Mai 
@@ -634,13 +621,14 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
                 cout << " from " << previous_node[distance.first] << endl;
             }
         }
+    
     }
 
-
+   
 }
 // end Safwa
 //start Rana 
-unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
+ int CountryGraph::FloydWarshall(string startcity, string distcity)
 {
     // Create a distance map to store all shortest paths
     unordered_map<string, unordered_map<string, int>> distance;
@@ -675,8 +663,8 @@ unordered_map<string, unordered_map<string, int>> CountryGraph::FloydWarshall()
             }
         }
     }
-
-    return distance;
+    return distance[startcity][distcity];
+  
 }
 
 string CountryGraph::findParent(unordered_map<string, string>& parent, const string& city) {
@@ -776,14 +764,23 @@ void CountryGraph::kruskalMST() {
 //end Rana
 bool CountryGraph::is_connected()
 {
-    auto it = cities.begin()->first;
-    DFS(it);
-    if (connected)
+    unordered_set<string> visited;
+    queue<string> q;
+    auto start_city = cities.begin()->first;
+    q.push(start_city);
+    visited.insert(start_city);
+    while (!q.empty())
     {
-        return true;
+        string current_city = q.front();
+        q.pop();
+        for (const auto& neighbor : cities[current_city])
+        {
+            if (visited.find(neighbor.destination_city) == visited.end())
+            {
+                q.push(neighbor.destination_city);
+                visited.insert(neighbor.destination_city);
+            }
+        }
     }
-    else
-    {
-        return false;
-    }
+    return visited.size() == cities.size();
 }

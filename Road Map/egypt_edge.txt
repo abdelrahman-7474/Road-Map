@@ -1,4 +1,10 @@
-Cairo,Portsaid,90
-Alex,Kafer,9
-Kafer,Alex,9
-Portsaid,Cairo,90
+Cairo,Alex,23
+Cairo,Suze,90
+Alex,Cairo,23
+Alex,Kafer,80
+Alex,Aswan,56
+Kafer,Alex,80
+Aswan,Alex,56
+Aswan,Sohage,23
+Sohage,Aswan,23
+Suze,Cairo,90

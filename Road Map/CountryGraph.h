@@ -18,7 +18,6 @@ struct edge
 };
 class CountryGraph
 {
-	bool connected;
 	unordered_map<string, int> rank;
 	unordered_map<string, list<edge>>cities;
     stack<pair<int,pair<string, list<edge>>>> undoStack;
@@ -54,7 +53,7 @@ public:
 	//int findCityIndex(const string& cityName);
 	string findParent(unordered_map<string, string>& parent, const string& city);
 	void unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2);
-	unordered_map<string, unordered_map<string, int>> FloydWarshall();
+	int FloydWarshall(string startcity, string destcity);
 	bool is_connected();
 	bool is_graphempty();
 };
