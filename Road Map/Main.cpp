@@ -285,7 +285,7 @@ void operation_switch(int operation_number, UserGraph* user)
 		cin >> dist_city;
 		if (Country.FindCity(stringformat(start_city)) && Country.FindCity(stringformat(dist_city)))
 		{
-			int distance = Country.FloydWarshall(stringformat(start_city), stringformat(dist_city));
+			int distance = Country.FloydWarshall2(stringformat(start_city), stringformat(dist_city));
 			cout << endl << "The distance:  " << distance << endl;
 		}
 		else
@@ -366,6 +366,7 @@ int main()
 {
 	UserManager manager;
 	UserGraph* curretnuser = nullptr;
+	
 	manager.loadUsers();
 	manager.loadAllGraphs();
 	int operationNum = -1;

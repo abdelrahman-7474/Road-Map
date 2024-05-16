@@ -323,6 +323,7 @@ int CountryGraph::Write_Cities_InFiles(string filename)
 
 int CountryGraph::Write_Edges_InFiles(string filename)
 {
+  
     ofstream outfile(filename);
     if (!outfile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -339,6 +340,7 @@ int CountryGraph::Write_Edges_InFiles(string filename)
 
 int CountryGraph::Read_Cities_FromFiles(string filename)
 {
+    applychanges = false;
     ifstream infile(filename);
     if (!infile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -352,10 +354,12 @@ int CountryGraph::Read_Cities_FromFiles(string filename)
         AddCity(line);
     }
     infile.close();
+    applychanges = true;
 }
 
 int CountryGraph::Read_Edges_FromFiles(string filename)
 {
+    applychanges = false;
 
     ifstream infile(filename);
     if (!infile.is_open()) {
@@ -378,6 +382,7 @@ int CountryGraph::Read_Edges_FromFiles(string filename)
         }
     }
     infile.close();
+    applychanges = true;
 }
 
 bool CountryGraph::is_graphempty()
@@ -628,43 +633,72 @@ void CountryGraph::dijkstra_algorithm(string source)//O((V+E)logV)
 }
 // end Safwa
 //start Rana 
- int CountryGraph::FloydWarshall(string startcity, string distcity)
-{
+int CountryGraph::FloydWarshall2(string start_city, string dist_city) {
     // Create a distance map to store all shortest paths
     unordered_map<string, unordered_map<string, int>> distance;
 
-    // Initialize the distance map with the graph data
-    for (auto const& city : cities) {
+    // Create a predecessor map to reconstruct the shortest paths
+    unordered_map<string, unordered_map<string, string>> predecessor_city;
+
+    // Initialize the distance and predecessor maps with the graph data
+    for (const auto& city : cities) {
         distance[city.first] = unordered_map<string, int>();
-        for (auto const& edge : city.second) {
+        predecessor_city[city.first] = unordered_map<string, string>();
+        for (const auto& edge : city.second) {
             distance[city.first][edge.destination_city] = edge.cost;
+            predecessor_city[city.first][edge.destination_city] = city.first;
         }
-        // Set distance to self and unvisited cities to infinity
+        // Set distance to self to 0 and to unconnected cities to infinity
         distance[city.first][city.first] = 0;
-        for (auto const& otherCity : cities) {
+        for (const auto& otherCity : cities) {
             if (distance[city.first].count(otherCity.first) == 0) {
                 distance[city.first][otherCity.first] = INT_MAX;
+                predecessor_city[city.first][otherCity.first] = ""; // No path initially
             }
         }
     }
 
     // Relax all edges by considering intermediate vertices
-    for (auto const& intermediate_city : cities) {
-        for (auto const& source_city : cities) {
-            for (auto const& destination_city : cities) {
-                // If there's a shorter path through the intermediate vertex, update the distance
-                if (distance[source_city.first].count(intermediate_city.first) != 0 &&
-                    distance[intermediate_city.first].count(destination_city.first) != 0 &&
-                    distance[source_city.first][intermediate_city.first] != INT_MAX &&
+    for (const auto& intermediate_city : cities) {
+        for (const auto& source_city : cities) {
+            for (const auto& destination_city : cities) {
+                // If there's a shorter path through the intermediate vertex, update the distance and predecessor
+                if (distance[source_city.first][intermediate_city.first] != INT_MAX &&
                     distance[intermediate_city.first][destination_city.first] != INT_MAX &&
                     distance[source_city.first][intermediate_city.first] + distance[intermediate_city.first][destination_city.first] < distance[source_city.first][destination_city.first]) {
                     distance[source_city.first][destination_city.first] = distance[source_city.first][intermediate_city.first] + distance[intermediate_city.first][destination_city.first];
+                    predecessor_city[source_city.first][destination_city.first] = predecessor_city[intermediate_city.first][destination_city.first];
                 }
             }
         }
     }
-    return distance[startcity][distcity];
-  
+
+    // Get the distance between the start and destination city
+    int dist = distance[start_city][dist_city];
+
+    // Print the shortest path
+    cout << "Shortest path from " << start_city << " to " << dist_city << ":" << endl;
+    if (dist == INT_MAX) {
+        cout << "No path exists." << endl;
+    }
+    else {
+        vector<string> path;
+        string next_city = dist_city;
+        while (next_city != "") {
+            path.push_back(next_city);
+            next_city = predecessor_city[start_city][next_city];
+        }
+        reverse(path.begin(), path.end());
+        for (const auto& city : path) {
+            cout << city;
+            if (city != dist_city) {
+                cout << " -> ";
+            }
+        }
+
+    }
+
+    return dist;
 }
 
 string CountryGraph::findParent(unordered_map<string, string>& parent, const string& city) {

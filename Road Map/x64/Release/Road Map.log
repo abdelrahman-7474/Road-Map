@@ -1,9 +1,13 @@
 ﻿  CountryGraph.cpp
-C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(403,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(406,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Main.cpp
   Generating code
-C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(340): warning C4715: 'CountryGraph::Write_Edges_InFiles': not all control paths return a value
-  55 of 2044 functions ( 2.7%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    97 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(322): warning C4715: 'CountryGraph::Write_Cities_InFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(339): warning C4715: 'CountryGraph::Write_Edges_InFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(237): warning C4715: 'CountryGraph::GetEdge': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(358): warning C4715: 'CountryGraph::Read_Cities_FromFiles': not all control paths return a value
+C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\Road Map\CountryGraph.cpp(386): warning C4715: 'CountryGraph::Read_Edges_FromFiles': not all control paths return a value
+  All 2204 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   Road Map.vcxproj -> C:\Users\ABDELRAHMAN\source\repos\Road Map\Road-Map\x64\Release\Road Map.exe

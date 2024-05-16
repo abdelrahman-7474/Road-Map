@@ -48,12 +48,11 @@ public:
 	void ApplyRChanges(pair<int, pair<string, list<edge>>>&);
 	void ReAddCity(pair<string, list<edge>>&);
 	edge GetEdge(string city_1, string city_2);
-	bool applychanges;
+	bool applychanges = true;
 	void kruskalMST();
-	//int findCityIndex(const string& cityName);
 	string findParent(unordered_map<string, string>& parent, const string& city);
 	void unionCities(unordered_map<string, string>& parent, unordered_map<string, int>& rank, const string& city1, const string& city2);
-	int FloydWarshall(string startcity, string destcity);
+	int FloydWarshall2(string startcity, string destcity);
 	bool is_connected();
 	bool is_graphempty();
 };
